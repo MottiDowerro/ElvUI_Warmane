@@ -3463,6 +3463,38 @@ E.Options.args.nameplates = {
 								["OVERLAP"] = L["UNIT_NAMEPLATES_TYPE_1"]
 							}
 						},
+						visibility = {
+							order = 4,
+							type = 'group',
+							name = L['Visibility'],
+							guiInline = true,
+							args = {
+								friendly = {
+									order = 1,
+									type = 'multiselect',
+									name = L["Friendly"],
+									get = function(info, key) return E.db.nameplates.visibility.friendly[key] end,
+									set = function(info, key, value) E.db.nameplates.visibility.friendly[key] = value; NP:ConfigureAll() end,
+									values = {
+										totems = L["Totems"],
+										pets = L["Pets"],
+										guardians = L["Guardians"],
+									},
+								},
+								enemy = {
+									order = 2,
+									type = 'multiselect',
+									name = L["Enemy"],
+									get = function(info, key) return E.db.nameplates.visibility.enemy[key] end,
+									set = function(info, key, value) E.db.nameplates.visibility.enemy[key] = value; NP:ConfigureAll() end,
+									values = {
+										totems = L["Totems"],
+										pets = L["Pets"],
+										guardians = L["Guardians"],
+									},
+								},
+							},
+						},
 						lowHealthThreshold = {
 							order = 4,
 							name = L["Low Health Threshold"],

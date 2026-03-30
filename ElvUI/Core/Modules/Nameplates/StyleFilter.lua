@@ -397,6 +397,14 @@ for unitType, units in pairs(uniqueUnitTypes) do
 	end
 end
 
+local totemBaseNames = {
+	a1 = "Grounding Totem", a2 = "Nature Resistance Totem", a3 = "Sentry Totem", a4 = "Windfury Totem", a5 = "Wrath of Air Totem",
+	e1 = "Earth Elemental Totem", e2 = "Earthbind Totem", e3 = "Stoneclaw Totem", e4 = "Stoneskin Totem", e5 = "Strength of Earth Totem", e6 = "Tremor Totem",
+	f1 = "Fire Elemental Totem", f2 = "Flametongue Totem", f3 = "Frost Resistance Totem", f4 = "Magma Totem", f5 = "Searing Totem", f6 = "Totem of Wrath",
+	w1 = "Cleansing Totem", w2 = "Fire Resistance Totem", w3 = "Healing Stream Totem", w4 = "Mana Spring Totem", w5 = "Mana Tide Totem",
+	o1 = "Lightwell", u1 = "Shadow Fiend", u2 = "Kinetic Bomb"
+}
+
 for totemSchool, totems in pairs(totemTypes) do
 	for spellID, totemID in pairs(totems) do
 		local totemName, rank, texture = GetSpellInfo(spellID)
@@ -406,14 +414,28 @@ for totemSchool, totems in pairs(totemTypes) do
 		end
 
 		rank = totemRanks[tonumber(match(rank, ("%d+")))]
-
-		if rank then
-			totemName = totemName..rank
-		else
-			totemName = totemName
-		end
+		totemName = totemName..(rank or "")
 
 		NP.Totems[totemName] = totemID
+
+		-- Register English name for non-English servers (e.g. Warmane)
+		local engName = totemBaseNames[totemID]
+		if engName and engName ~= totemName then
+			NP.Totems[engName..(rank or "")] = totemID
+		end
+	end
+end
+
+for unitType, units in pairs(uniqueUnitTypes) do
+	for spellID, unit in pairs(units) do
+		local name, _, texture = GetSpellInfo(spellID)
+		NP.TriggerConditions.uniqueUnits[unit] = {name, unitType, texture}
+		NP.UniqueUnits[name] = unit
+
+		local engName = totemBaseNames[unit]
+		if engName and engName ~= name then
+			NP.UniqueUnits[engName] = unit
+		end
 	end
 end
 
