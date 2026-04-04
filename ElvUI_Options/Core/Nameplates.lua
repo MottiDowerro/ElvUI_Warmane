@@ -3493,6 +3493,14 @@ E.Options.args.nameplates = {
 										guardians = L["Guardians"],
 									},
 								},
+								serverClientLanguage = {
+									order = 3,
+									type = 'toggle',
+									name = L["Server Language Fix"],
+									desc = L["Check this if your client language and server language are different. This will help with nameplate totem recognition."],
+									get = function(info) return E.db.nameplates.serverClientLanguage end,
+									set = function(info, value) E.db.nameplates.serverClientLanguage = value; NP:ConfigureAll() end,
+								},
 							},
 						},
 						lowHealthThreshold = {

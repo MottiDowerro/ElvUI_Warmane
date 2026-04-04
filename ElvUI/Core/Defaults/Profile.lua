@@ -535,6 +535,7 @@ P.nameplates = {
 		ElvUI_NonTarget = {triggers = {enable = true}},
 		ElvUI_Totem = {triggers = {enable = true}}
 	},
+	serverClientLanguage = false,
 	visibility = {
 		showAll = true,
 		showOnlyNames = false,

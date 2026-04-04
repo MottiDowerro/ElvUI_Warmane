@@ -417,12 +417,6 @@ for totemSchool, totems in pairs(totemTypes) do
 		totemName = totemName..(rank or "")
 
 		NP.Totems[totemName] = totemID
-
-		-- Register English name for non-English servers (e.g. Warmane)
-		local engName = totemBaseNames[totemID]
-		if engName and engName ~= totemName then
-			NP.Totems[engName..(rank or "")] = totemID
-		end
 	end
 end
 
@@ -431,10 +425,37 @@ for unitType, units in pairs(uniqueUnitTypes) do
 		local name, _, texture = GetSpellInfo(spellID)
 		NP.TriggerConditions.uniqueUnits[unit] = {name, unitType, texture}
 		NP.UniqueUnits[name] = unit
+	end
+end
 
-		local engName = totemBaseNames[unit]
-		if engName and engName ~= name then
-			NP.UniqueUnits[engName] = unit
+function NP:UpdateTotemLanguage()
+	local useEnglish = E.db.nameplates and E.db.nameplates.serverClientLanguage
+	for totemSchool, totems in pairs(totemTypes) do
+		for spellID, totemID in pairs(totems) do
+			local totemName, rank = GetSpellInfo(spellID)
+			rank = totemRanks[tonumber(match(rank, ("%d+")))]
+			local engName = totemBaseNames[totemID]
+			if engName and engName ~= totemName then
+				if useEnglish then
+					NP.Totems[engName..(rank or "")] = totemID
+				else
+					NP.Totems[engName..(rank or "")] = nil
+				end
+			end
+		end
+	end
+
+	for unitType, units in pairs(uniqueUnitTypes) do
+		for spellID, unit in pairs(units) do
+			local name = GetSpellInfo(spellID)
+			local engName = totemBaseNames[unit]
+			if engName and engName ~= name then
+				if useEnglish then
+					NP.UniqueUnits[engName] = unit
+				else
+					NP.UniqueUnits[engName] = nil
+				end
+			end
 		end
 	end
 end
@@ -938,6 +959,8 @@ end
 NP.StyleFilterTriggerList = {}
 NP.StyleFilterTriggerEvents = {}
 function NP:StyleFilterConfigure()
+	NP:UpdateTotemLanguage()
+
 	twipe(NP.StyleFilterTriggerList)
 	twipe(NP.StyleFilterTriggerEvents)
 
